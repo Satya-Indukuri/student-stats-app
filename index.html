@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Count by Country</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #0078d4; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Student Analytics: Student Count by Country</h1>
+    <table id="studentTable">
+        <thead>
+            <tr>
+                <th>Country</th>
+                <th>Student Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="2">Loading data...</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchStudentData() {
+            try {
+                // Note: We will update this URL later once the API is created
+                const response = await fetch('/api/GetStudentCounts');
+                const data = await response.json();
+                const tableBody = document.querySelector('#studentTable tbody');
+                
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="2">No data found.</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = data.map(row =>
+                    `<tr><td>${row.Country}</td><td>${row.StudentCount}</td></tr>`
+                ).join('');
+            } catch (err) {
+                console.error("Error fetching data:", err);
+                document.querySelector('#studentTable tbody').innerHTML = '<tr><td colspan="2">Error loading data. Check console.</td></tr>';
+            }
+        }
+        fetchStudentData();
+    </script>
+</body>
+</html>
