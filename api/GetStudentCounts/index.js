@@ -26,15 +26,23 @@ module.exports = async function (context, req) {
                 resolve();
             } else {
                 const Request = require('tedious').Request;
-                const query = 'SELECT Country, COUNT(*) AS StudentCount FROM dbo.Students GROUP BY Country';
+                const query = `
+                  SELECT
+                    DB_NAME() AS CurrentDB,
+                    @@SERVERNAME AS ServerName,
+                    COUNT(*) AS TotalStudents
+                  FROM dbo.Students;
+                `;
                 const request = new Request(query, (err, rowCount, rows) => {
                     if (err) {
                         context.res = { status: 500, body: err };
                     } else {
                         const result = rows.map(row => ({
-                            Country: row[0].value,
-                            StudentCount: row[1].value
+                          CurrentDB: row[0].value,
+                          ServerName: row[1].value,
+                          TotalStudents: row[2].value
                         }));
+
                         context.res = { status: 200, body: result };
                     }
                     connection.close();
