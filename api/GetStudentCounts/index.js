@@ -26,7 +26,7 @@ module.exports = async function (context, req) {
                 resolve();
             } else {
                 const Request = require('tedious').Request;
-                const query = 'SELECT Country, COUNT(*) AS StudentCount FROM Students GROUP BY Country';
+                const query = 'SELECT Country, COUNT(*) AS StudentCount FROM dbo.Students GROUP BY Country';
                 const request = new Request(query, (err, rowCount, rows) => {
                     if (err) {
                         context.res = { status: 500, body: err };
